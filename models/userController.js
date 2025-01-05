@@ -1,11 +1,5 @@
 import User from './user.js';
 
-export const createUser = (username, email, password, googleId, favoriteClub, trophies, fanscore, oauth, role, profilePic, stats)=> {
-  const user = new User({username, email, password, googleId, favoriteClub, trophies, fanscore, oauth, role, profilePic, stats});
-  const result = user.save();
-  return result;
-};
-
 export const findUser = (username, email, password, googleId)=> {
   const result = User.findOne({username, email, password, googleId});
   return result;

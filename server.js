@@ -6,6 +6,7 @@ import authRoutes from './routes/authRoutes.js'
 import OAuthRoutes from './routes/OAuthRoutes.js'
 import leagueRoutes from './routes/leagueRoutes.js'
 import clubRoutes from './routes/clubRoutes.js'
+import userRoutes from './routes/userRoutes.js'
 import passport from 'passport'
 import bodyParser from 'body-parser'
 
@@ -25,6 +26,7 @@ app.use('/api/auth', authRoutes);
 app.use('/auth', OAuthRoutes);
 app.use('/api/leagues', leagueRoutes)
 app.use('/api/clubs', clubRoutes)
+app.use('/api/users', userRoutes)
 
 const PORT = process.env.PORT || 5000;
 

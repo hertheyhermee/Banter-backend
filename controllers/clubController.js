@@ -1,27 +1,30 @@
-import League from '../models/league.js';
 import Club from '../models/club.js';
-import { storeClubs } from '../services/populateData.js';
+import fetchClubs from '../services/fetchClubs.js';
 
-// Get clubs by league
-export const getClubsByLeague = async (req, res) => {
-  const { leagueId } = req.params;
-  
+// Get all clubs
+export const getAllClubs = async (req, res) => {
   try {
-    const league = await League.findOne({ leagueId });
-    if (!league) {
-      return res.status(404).json({ message: 'League not found' });
-    }
+    const teams = await fetchClubs();
+    
+    // Upsert clubs
+    const updatedClubs = await Promise.all(teams.map(team => 
+      Club.findOneAndUpdate(
+        { id: team.id },
+        {
+          id: team.id,
+          name: team.name,
+          tla: team.tla,
+          shortName: team.shortName,
+          crest: team.crest,
+          area: team.area
+        },
+        { upsert: true, new: true }
+      )
+    ));
 
-    const clubs = await Club.find({ league: league._id });
-    if (clubs.length === 0) {
-      await storeClubs(leagueId, league.season); // Populate clubs if none exist
-      const refreshedClubs = await Club.find({ league: league._id });
-      return res.status(200).json(refreshedClubs);
-    }
-
-    res.status(200).json(clubs);
+    res.status(200).json(updatedClubs);
   } catch (error) {
     console.error('Error fetching clubs:', error);
-    res.status(500).json({ message: 'Failed to fetch clubs', error });
+    res.status(500).json({ message: 'Failed to fetch clubs', error: error.message });
   }
 };

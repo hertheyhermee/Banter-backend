@@ -1,8 +1,8 @@
 import express from 'express';
-import { getClubsByLeague } from '../controllers/clubController.js';
+import { getAllClubs } from '../controllers/clubController.js';
 
 const router = express.Router();
 
-router.get('/:leagueId', getClubsByLeague);
+router.get('/', getAllClubs);
 
 export default router;

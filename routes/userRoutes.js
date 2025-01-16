@@ -5,7 +5,7 @@ import { authorizeRoles } from '../middleware/authorizeRoles.js';
 
 const router = express.Router();
 
-// Get all users
+// Get all users - Admin only
 router.get('/', authMiddleware, authorizeRoles('admin'), async (req, res) => {
   try {
     const users = await getAllUsers();
@@ -15,9 +15,13 @@ router.get('/', authMiddleware, authorizeRoles('admin'), async (req, res) => {
   }
 });
 
-// Find a single user
+// Find a single user - Admin can access any user, regular users can only access their own profile
 router.get('/:id', authMiddleware, async (req, res) => {
   try {
+    // Check if user is trying to access their own profile or if they're an admin
+    if (req.user.role !== 'admin' && req.user.id !== req.params.id) {
+      return res.status(403).json({ message: 'Access denied. You can only view your own profile.' });
+    }
     const user = await findUser(req.params.id);
     res.status(200).json(user);
   } catch (error) {
@@ -25,9 +29,19 @@ router.get('/:id', authMiddleware, async (req, res) => {
   }
 });
 
-// Update a user
+// Update a user - Admin can update any user, regular users can only update their own profile
 router.put('/:id', authMiddleware, async (req, res) => {
   try {
+    // Check if user is trying to update their own profile or if they're an admin
+    if (req.user.role !== 'admin' && req.user.id !== req.params.id) {
+      return res.status(403).json({ message: 'Access denied. You can only update your own profile.' });
+    }
+    
+    // Prevent regular users from escalating their role
+    if (req.user.role !== 'admin' && req.body.role) {
+      delete req.body.role; // Remove role from update data if user is not admin
+    }
+    
     const updatedUser = await updateUser(req.params.id, req.body);
     res.status(200).json(updatedUser);
   } catch (error) {
@@ -35,9 +49,13 @@ router.put('/:id', authMiddleware, async (req, res) => {
   }
 });
 
-// Delete a user
+// Delete a user - Admin can delete any user, regular users can only delete their own profile
 router.delete('/:id', authMiddleware, async (req, res) => {
   try {
+    // Check if user is trying to delete their own profile or if they're an admin
+    if (req.user.role !== 'admin' && req.user.id !== req.params.id) {
+      return res.status(403).json({ message: 'Access denied. You can only delete your own profile.' });
+    }
     await deleteUser(req.params.id);
     res.status(204).send();
   } catch (error) {

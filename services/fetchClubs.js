@@ -3,20 +3,23 @@ import dotenv from 'dotenv'
 
 dotenv.config();
 
-const fetchClubs = async (leagueId, season) => {
+const fetchClubs = async () => {
     try {
-      const response = await axios.get(`https://api-football-v1.p.rapidapi.com/v3/teams?league=${leagueId}&season=${season}`, {
+      const response = await axios.get(`https://api.football-data.org/v4/teams`, {
         headers: {
-          'X-RapidAPI-Host': 'api-football-v1.p.rapidapi.com',
-          'X-RapidAPI-Key': process.env.X_RAPID_API_KEY,
-          'Host': 'api-football-v1.p.rapidapi.com',
+          'X-Auth-Token': process.env.X_AUTH_TOKEN
         },
+        params: {
+          limit: 300
+        }
       });
-      const clubs = response.data.response; // Adjust based on API structure
-      return clubs;
+      console.log(response.data);
+      
+      return response.data.teams;
     } catch (error) {
-      console.error('Error fetching clubs:', error);
+      console.error('Error fetching teams:', error);
+      throw error;
     }
-  };
+};
   
-  export default fetchClubs
+export default fetchClubs

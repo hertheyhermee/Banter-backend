@@ -16,7 +16,7 @@ export const registerUser = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { username, email, password } = req.body;
+  const { username, email, password} = req.body; // Include googleId in the request body if available
 
   try {
     const existingUser = await User.findOne({ email });
@@ -30,10 +30,14 @@ export const registerUser = async (req, res) => {
       username,
       email,
       password: hashedPassword,
-      oauth: false
+      oauth: false, // Set to false for normal signup
+      googleId: null // Set googleId only if provided
     });
 
-    await newUser.save();
+    console.log(newUser);
+    
+
+    await newUser.save(); 
 
     const token = jwt.sign({ id: newUser._id, role: newUser.role }, JWT_SECRET, { expiresIn: '30d' });
 

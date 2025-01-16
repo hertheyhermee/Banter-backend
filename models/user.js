@@ -13,11 +13,14 @@ const userSchema = new mongoose.Schema({
     },
     password: { 
         type: String, 
-        required: function() { return !this.oauth; } // Only required if not using OAuth
+        required: function() { 
+            return this.oauth === true ? true : false
+         } // Only required if not using OAuth
     },
     googleId: { 
         type: String, 
-        unique: true 
+        unique: true,
+        sparse: true
     },
     favoriteClub: { 
         type: mongoose.Schema.Types.ObjectId, 

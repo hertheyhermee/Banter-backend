@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const JWT_SECRET = 'your_jwt_secret'; // Use an environment variable in production
+const JWT_SECRET = process.env.JWT_SECRET; // Use environment variable instead of hardcoded value
 
 passport.use(
   new GoogleStrategy(

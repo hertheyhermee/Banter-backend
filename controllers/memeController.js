@@ -1,5 +1,5 @@
 import Meme from '../models/meme.js';
-import User from '../models/User.js';
+import User from '../models/user.js';
 import Club from '../models/club.js';
 
 // Create a new meme

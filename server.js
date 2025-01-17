@@ -98,12 +98,12 @@ app.use((err, req, res, next) => {
     res.status(500).json({ message: 'Something went wrong!' });
 });
 
-const PORT = process.env.PORT || 3002;
+const CLIENT_URL = process.env.CLIENT_URL || 3002;
 
 // Initialize socket with authentication
 initializeSocket(httpServer);
 
 // Start server
 httpServer.listen(PORT, () => {
-    console.log(`✨ Server running on http://localhost:${PORT}`);
+    console.log(`✨ Server running on ${CLIENT_URL}`);
 });

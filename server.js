@@ -17,6 +17,7 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import { createServer } from 'http'
 import { initializeSocket } from './socket.js'
+import MongoStore from 'connect-mongo'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -39,6 +40,10 @@ app.use(session({
     secret: process.env.SESSION_SECRET || 'your-secret-key', 
     resave: false, 
     saveUninitialized: true,
+    store: MongoStore.create({ 
+        mongoUrl: process.env.MONGO_URI,
+        collectionName: 'sessions' // Optional: specify a collection name
+    }),
     cookie: {
         secure: process.env.NODE_ENV === 'production',
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'

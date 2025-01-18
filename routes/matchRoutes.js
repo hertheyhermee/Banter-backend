@@ -26,4 +26,4 @@ router.post('/:id/comments', authMiddleware, addComment);
 router.post('/:id/memes', authMiddleware, upload.single('meme'), addMemeComment);
 router.post('/comments/:commentId/like', authMiddleware, toggleCommentLike);
 
-export default router; 
+export default router;

@@ -78,3 +78,21 @@ export const loginUser = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+
+// Logout User
+export const logoutUser = async (req, res) => {
+  try {
+    // Clear session if using session-based auth
+    if (req.session) {
+      req.session.destroy();
+    }
+
+    // Clear cookies if any
+    res.clearCookie('token');
+    
+    // Send success response
+    res.status(200).json({ message: 'Logged out successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error during logout', error: error.message });
+  }
+};
